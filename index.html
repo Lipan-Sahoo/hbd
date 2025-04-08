@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #fa63ca;
+            text-align: center;
+            padding: 20px;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #bf3077;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .hidden { display: none; }
+
+        .birthday-container {
+            max-width: 800px;
+            margin: auto;
+            display: none;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #ab1862;
+            margin-bottom: 20px;
+            animation: bounce 1.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        p { color: #333; margin-bottom: 30px; }
+
+        #birthday-photos img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: rotatePhotos 5s infinite linear;
+        }
+
+        @keyframes rotatePhotos {
+            0% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.8); }
+        }
+
+        .birthday-message {
+            font-size: 24px;
+            font-weight: bold;
+            opacity: 0;
+            animation: showMessages 10s infinite;
+        }
+
+        @keyframes showMessages {
+            0% { opacity: 1; transform: scale(1); color: red; }
+            50% { opacity: 1; transform: scale(1.2); color: blue; }
+            100% { opacity: 0; transform: scale(1); color: green; }
+        }
+
+        .floating-objects {
+            position: absolute;
+            bottom: 0;
+            width: 80px;
+            height: 80px;
+            font-size: 50px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            animation: floatUp 10s linear infinite;
+        }
+
+        @keyframes floatUp {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(-100vh); opacity: 0; }
+        }
+
+        .question-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%; 
+            max-width: 400px; 
+        }
+
+        button {
+            background-color: #d641cf;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover { background-color: #ce29c8; }
+    </style>
+</head>
+<body>
+    <div class="loading-screen" id="loading">Loading... 🎉✨🎂</div>
+
+    <div class="question-container" id="birthday-question">
+        <p> RAKESH's birthday?</p>
+        <button onclick="startBirthday()">Yes</button>
+        <button onclick="moveQuestion()">No</button>
+    </div>
+
+    <div class="birthday-container" id="birthday-content">
+        <h1>Happy Birthday RAKESH!</h1>
+        <p>May your special day be filled with all the joy your heart can hold!</p>
+        <audio id="birthday-song" loop>
+            <source src="hbd.mp3" type="audio/mpeg">
+        </audio>
+        <div id="birthday-photos"></div>
+        <div class="birthday-message" id="message">Have a wonderful birthday!</div>
+    </div>
+
+    <script>
+        const loadingEmojis = ['🎉','❤','❣', '✨', '🎂', '🎈', '🎁', '🥳'];
+        let emojiIndex = 0;
+        setInterval(() => {
+            document.getElementById('loading').textContent = 'Loading... ' + loadingEmojis[emojiIndex];
+            emojiIndex = (emojiIndex + 1) % loadingEmojis.length;
+        }, 500);
+
+        setTimeout(() => { document.getElementById('loading').classList.add('hidden'); }, 3000);
+
+        function startBirthday() {
+            document.getElementById('birthday-question').style.display = 'none';
+            document.getElementById('birthday-content').style.display = 'block';
+            document.getElementById('birthday-song').play();
+            startPhotoRotation();
+            createFloatingObjects();
+        }
+
+        function moveQuestion() {
+            const questionBox = document.getElementById('birthday-question');
+            questionBox.style.left = Math.random() * (window.innerWidth - questionBox.offsetWidth) + 'px';
+            questionBox.style.top = Math.random() * (window.innerHeight - questionBox.offsetHeight) + 'px';
+        }
+
+        function startPhotoRotation() {
+            const photos = ['p7.jpg', 'p2.jpg', 'p6.jpg','p4.jpg', 'p5.jpg', 'p7.jpg', 'p2.jpg', 'p6.jpg','p4.jpg', 'p5.jpg',  ];
+            let index = 0;
+            const imgElement = document.createElement('img');
+            document.getElementById('birthday-photos').appendChild(imgElement);
+            setInterval(() => {
+                imgElement.src = photos[index];
+                index = (index + 1) % photos.length;
+            }, 5000);
+        }
+
+        function createFloatingObjects() {
+            const objects = ['🎈','❤','❣', '⭐', '🎂'];
+            setInterval(() => {
+                const obj = document.createElement('div');
+                obj.className = 'floating-objects';
+                obj.innerHTML = objects[Math.floor(Math.random() * objects.length)];
+                obj.style.left = Math.random() * (window.innerWidth - 80) + 'px';
+                document.body.appendChild(obj);
+                setTimeout(() => obj.remove(), 10000);
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
